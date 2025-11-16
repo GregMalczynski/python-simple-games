@@ -1,47 +1,46 @@
-from random import randint
+from random import choice
 
-GAME_DATA = ['paper', 'scissors', 'stone']
-GAME_COUNTS = 4
-COUNT_NUMBER = 0
-PLAYER_WINS = 0
-COMPUTER_WINS = 0
+GAME_RULES = {
+    'paper': 'stone', # paper > stone
+    'scissors': 'paper', # scissors > paper
+    'stone': 'scissors' # stone > scissors
+}
 
-while COUNT_NUMBER < GAME_COUNTS:
-    COUNT_NUMBER += 1
+def get_player_choice():
+    # get and validate player choice
+    while True:
+        choice = input('paper / scissors / stone : ').lower().strip()
+        if choice in GAME_RULES:
+            return choice
+        print('Wrong choice, try again.')
 
-    computer_choice = randint(0, 2)
+def determine_winner(player, computer):
+    # who win round
+    if player == computer:
+        return 'draw'
+    return 'player' if GAME_RULES[player] == computer else 'computer'
+
+def play_game(rounds=4):
+    # main function
+    scores = {'player': 0 , 'computer': 0}
+
+    for round_num in range(1, rounds + 1):
+        print(f'\n Round : {round_num}')
+
+        player = get_player_choice()
+        computer = choice(list(GAME_RULES.keys()))
+
+        result = determine_winner(player, computer)
+
+        print(f'Computer : {computer}, Player : {player}')
+
+        if result == 'draw':
+            print('Draw!')
+        else:
+            scores[result] += 1
+            print(f'{'You winning' if result == 'player' else 'Computer winning'}')
     
-    print()
-    player_choice = input('paper / scissors / stone ')
+    print(f'\n Summary : Player {scores['player']} , Computer {scores['computer']}')
 
-    match player_choice.lower():
-        case 'paper':
-            if computer_choice == 0:
-                print('remis')
-            elif computer_choice == 1:
-                print(f'Computer wins! , Computer : {GAME_DATA[computer_choice]} , Player : {player_choice.lower()}')
-                COMPUTER_WINS += 1
-            elif computer_choice == 2:
-                print(f'Player wins! , Computer : {GAME_DATA[computer_choice]} , Player : {player_choice.lower()}')
-                PLAYER_WINS += 1
-        case 'scissors':
-            if computer_choice == 0:
-                print(f'Player wins! , Computer : {GAME_DATA[computer_choice]} , Player : {player_choice.lower()}')
-                PLAYER_WINS += 1
-            elif computer_choice == 1:
-                print('remis')
-            elif computer_choice == 2:
-                print(f'Computer wins! , Computer : {GAME_DATA[computer_choice]} , Player : {player_choice.lower()}')
-                COMPUTER_WINS += 1
-        case 'stone':
-            if computer_choice == 0:
-                print(f'Computer wins! , Computer : {GAME_DATA[computer_choice]} , Player : {player_choice.lower()}')
-                COMPUTER_WINS += 1
-            elif computer_choice == 1:
-                print(f'Player wins! , Computer : {GAME_DATA[computer_choice]} , Player : {player_choice.lower()}')
-                PLAYER_WINS += 1
-            elif computer_choice == 2:
-                print('remis')
-
-print()
-print(f'SUMMERY - Player Wins : {PLAYER_WINS} , Computer Wins : {COMPUTER_WINS} in {GAME_COUNTS} rounds')
+if __name__ == '__main__':
+    play_game()
